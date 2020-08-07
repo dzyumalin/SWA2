@@ -18,10 +18,10 @@ let body = document.querySelector('body'),
     
     let fields = interview.fields;
 
-for (let i = 0; i < fields.length; i++) { 
-    let label = document.createElement('label'),
-        input = document.createElement('input'),
-        subTitle = document.createElement('p');
+    for (let i = 0; i < fields.length; i++) { 
+        let label = document.createElement('label'),
+            input = document.createElement('input'),
+            subTitle = document.createElement('p');
 
         label.className = "resume__label";
         input.className = "resume__input";
@@ -50,7 +50,7 @@ for (let i = 0; i < fields.length; i++) {
         block.appendChild(label);
         label.appendChild(subTitle);
         label.appendChild(input);
-    }else{
+    } else{
         block.appendChild(label);
         label.appendChild(subTitle);
         label.appendChild(input);
