@@ -1,58 +1,52 @@
 'use strict';
 
-let body = document.querySelector('body'),
-    block = document.createElement('block');
+document.addEventListener('DOMContentLoaded', function() {
 
-    block.className = "resume"
-    body.appendChild(block);
+    let section = document.querySelector('section'),
+        header = document.querySelector('header'),
+        h1 = document.createElement('h1'),
+        div = document.createElement('div'),
+        fileInput = document.querySelector('#input__file');
     
-    const request = new XMLHttpRequest();
-        request.open('GET', 'js/json/interview.json', false);
-        request.send();
-    const interview = JSON.parse(request.responseText);
+    fileInput.addEventListener('change', function (event) { // Получаем файл
     
-    let title = document.createElement('h1');
-    title.className = "resume__title";
-    title.textContent = interview.name;
-    block.appendChild(title);
+        let file = fileInput.files[0]; // Псевдомассив выбранных файлов. В данном случае файл 1
+        let reader = new FileReader(); // Объект позволит прочитать содержимое файлов
+        reader.readAsText(file); // Получим строку
+        reader.onload = function() {   // Файл прочитан
+            let jsonOutput = JSON.parse(reader.result); // Разбиваем строку json
+            headerNames(jsonOutput);
+            sectionFields(jsonOutput);
+            console.log(jsonOutput);
+        };
     
-    let fields = interview.fields;
-
-for (let i = 0; i < fields.length; i++) { 
-    let label = document.createElement('label'),
-        input = document.createElement('input'),
-        subTitle = document.createElement('p');
-
-        label.className = "resume__label";
-        input.className = "resume__input";
-        subTitle.textContent = fields[i].label;
-        input.type = fields[i].input.type;
-
-    if (input.type === "number")   { 
-        input.type = "text";
-        input.id = fields[i].input.type + `${i}`;
-        $(function(){
-            $("#number"+ `${i}`).mask(fields[i].input.mask); 
-        });
-    }
-
-    input.required = fields[i].input.required;
-
-    if ((input.placeholder = fields[i].input.placeholder) === undefined)  {
-        input.placeholder = "";
-    }
+    });
     
-    input.filetype = fields[i].input.filetype;
+    let headerNames = (jsonObject) => { // Создадим тег h1 с элементом name из файла json
+        h1.textContent = jsonObject['name']; 
+        header.appendChild(h1);
+    };
 
-    if ("technologies" in fields[i].input)  {
-    } else if(fields[i].input.type == "file")   {
-        input.className = "resume__input-file";
-        block.appendChild(label);
-        label.appendChild(subTitle);
-        label.appendChild(input);
-    }else{
-        block.appendChild(label);
-        label.appendChild(subTitle);
-        label.appendChild(input);
-    }
-}
+    let sectionFields =(jsonObject) => {   // Создадим секции массива fields с его элементами
+        let fields = jsonObject['fields'],
+            references = jsonObject['references'],
+            buttons = jsonObject['buttons'],
+            myButton = document.createElement('button');
+    
+        for (let elements = 0; elements < fields.length; elements++) {
+            let p = document.createElement('p'),
+                input = document.createElement('input');
+
+                div = document.createElement('div');
+                p.textContent = fields[elements].label;
+                input.placeholder = input.placeholder || ' ';
+                section.appendChild(div);
+                div.appendChild(p);
+                div.appendChild(input);
+        }
+        for (let i = 0; i < fields.length; i++) {
+            myButton.innerText = buttons[i].text;
+            div.appendChild(myButton); 
+        }
+    };
+});
