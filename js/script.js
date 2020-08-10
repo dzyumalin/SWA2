@@ -2,13 +2,17 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    let section = document.querySelector('section'),
-        header = document.querySelector('header'),
+    let setSelector = (selector) => {   // Получение всех селекторов с помощью ф-ии
+        return document.querySelector(selector);
+    };
+
+    let section = setSelector('section'),
+        header = setSelector('header'),
         h1 = document.createElement('h1'),
-        div = document.createElement('div'),
-        fileInput = document.querySelector('#input__file');
+        itsDiv = document.createElement('div'),
+        fileInput = setSelector('#input__file');
     
-    fileInput.addEventListener('change', function (event) { // Получаем файл
+    fileInput.addEventListener('change', function (e) { 
     
         let file = fileInput.files[0]; // Псевдомассив выбранных файлов. В данном случае файл 1
         let reader = new FileReader(); // Объект позволит прочитать содержимое файлов
@@ -27,26 +31,47 @@ document.addEventListener('DOMContentLoaded', function() {
         header.appendChild(h1);
     };
 
-    let sectionFields =(jsonObject) => {   // Создадим секции массива fields с его элементами
+    let sectionFields = (jsonObject) => {   // Создадим секции массива fields с его элементами
         let fields = jsonObject['fields'],
             references = jsonObject['references'],
             buttons = jsonObject['buttons'],
-            myButton = document.createElement('button');
+            itsButton = document.createElement('button');
     
-        for (let elements = 0; elements < fields.length; elements++) {
-            let p = document.createElement('p'),
-                input = document.createElement('input');
+        for (let a = 0; a < fields.length; a++) {
+            let itsP = document.createElement('p'),
+                itsInput = document.createElement('input');
 
-                div = document.createElement('div');
-                p.textContent = fields[elements].label;
-                input.placeholder = input.placeholder || ' ';
-                section.appendChild(div);
-                div.appendChild(p);
-                div.appendChild(input);
+                itsDiv = document.createElement('div');
+                itsP.textContent = fields[a].label;
+
+                let input = fields[a].input;
+                itsInput.placeholder = input.placeholder || ' ';
+                itsInput.type = input.type;
+            
+                itsDiv.appendChild(itsP);
+                itsDiv.appendChild(itsInput);
+                section.appendChild(itsDiv);
         }
-        for (let i = 0; i < fields.length; i++) {
-            myButton.innerText = buttons[i].text;
-            div.appendChild(myButton); 
+
+        if (!references) {
+                return false;
+        } else {
+            for (let j = 0; j < references.length; j++) {
+                let itsReferences = document.createElement('input');
+                    itsReferences.innerText = references[j].text;
+                    itsReferences.type = references[j].type;
+                    itsReferences.required = references[j].required;
+                    itsReferences.checked = references[j].checked;
+                    itsReferences.ref = references[j].ref;
+                    itsDiv.appendChild(itsReferences);
+                    section.appendChild(itsDiv);
+                    console.log(itsReferences);
+            }   
+        }
+        
+        for (let i = 0; i < buttons.length; i++) {
+            itsButton.innerText = buttons[i].text;
+            itsDiv.appendChild(itsButton); 
         }
     };
 });
